@@ -1,3 +1,6 @@
 [submodule "Client-Front-Zero3D"]
 	path = Client-Front-Zero3D
 	url = https://github.com/JulianCabanillas/Client-Front-Zero3D.git
+[submodule "Client-Back-Zero3D"]
+	path = Client-Back-Zero3D
+	url = https://github.com/JulianCabanillas/Client-Back-Zero3D.git
