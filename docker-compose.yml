@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: db_zero3d
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./Client-Back-Zero3D/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  web:
+    build: ./Client-Back-Zero3D
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py createadmin --noinput &&
+             gunicorn appBackClient.wsgi:application --bind 0.0.0.0:8000"
+    environment:
+      DB_NAME: db_zero3d
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_HOST: db
+      DB_PORT: 5432
+    depends_on:
+      - db
+    volumes:
+      - ./Client-Back-Zero3D:/app
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./Client-Front-Zero3D
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
