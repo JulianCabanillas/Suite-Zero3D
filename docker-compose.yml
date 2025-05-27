@@ -15,11 +15,7 @@ services:
 
   web:
     build: ./Client-Back-Zero3D
-    command: >
-      sh -c "python manage.py makemigrations &&
-             python manage.py migrate &&
-             python manage.py createadmin --noinput &&
-             gunicorn appBackClient.wsgi:application --bind 0.0.0.0:8000"
+    command: /entrypoint.sh
     environment:
       DB_NAME: db_zero3d
       DB_USER: admin
