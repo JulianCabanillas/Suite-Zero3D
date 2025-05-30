@@ -15,6 +15,7 @@ services:
 
   web:
     build: ./Client-Back-Zero3D
+
     command: /entrypoint.sh
     environment:
       DB_NAME: db_zero3d
@@ -22,15 +23,17 @@ services:
       DB_PASSWORD: admin
       DB_HOST: db
       DB_PORT: 5432
+      SLIC3R_PATH: /usr/bin/slic3r
     depends_on:
       - db
     volumes:
       - ./Client-Back-Zero3D:/app
+      - ./Client-Back-Zero3D/slicer_profiles:/app/slicer_profiles
     ports:
       - "8000:8000"
 
   frontend:
-    build: ./Client-Front-Zero3D
+    build: ./Client-Front-Zero3D 
     ports:
       - "3000:3000"
     depends_on:
