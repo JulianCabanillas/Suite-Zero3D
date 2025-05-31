@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
+    container_name: zero3d_db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: db_zero3d
       POSTGRES_USER: admin
@@ -12,10 +14,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./Client-Back-Zero3D/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - zero_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d db_zero3d"]
+      interval: 10s
+      retries: 5
+
+  frontend:
+    build: ./Client-Front-Zero3D
+    container_name: zero3d_preact_front 
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
+    networks:
+      - zero_network
+
 
   web:
     build: ./Client-Back-Zero3D
-
+    container_name: zero3d_django_back
     command: /entrypoint.sh
     environment:
       DB_NAME: db_zero3d
@@ -25,22 +44,30 @@ services:
       DB_PORT: 5432
       SLIC3R_PATH: /usr/bin/slic3r
     depends_on:
-      - db
+        db:
+          condition: service_healthy
     volumes:
       - ./Client-Back-Zero3D:/app
-      - ./Client-Back-Zero3D/slicer_profiles:/app/slicer_profiles
     ports:
       - "8000:8000"
+    networks:
+      - zero_network
+    
 
-  frontend:
-    build: ./Client-Front-Zero3D 
+  nginx:
+    build: ./Nginx
+    container_name: zero3d_nginx_rp
     ports:
-      - "3000:3000"
+      - "80:80"
     depends_on:
       - web
-
+      - frontend
+    networks:
+      - zero_network
+      
   pgadmin:
     image: dpage/pgadmin4
+    container_name: zero3d_pgAdmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -48,6 +75,12 @@ services:
       - "5050:80"
     depends_on:
       - db
+    networks:
+      - zero_network
 
 volumes:
   postgres_data:
+
+networks:
+  zero_network:
+    driver: bridge
