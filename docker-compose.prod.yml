@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:15-alpine
-    container_name: zero3d_db
+    image: postgres:15
+    container_name: zero3d_prod_db
     restart: unless-stopped
     env_file:
-      - ./.env.production 
+      - ./Client-Back-Zero3D/.env.production 
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -17,7 +17,7 @@ services:
     networks:
       - zero3d_prod_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d db_zero3d"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d zero3d_prod_db"]
       interval: 10s
       retries: 5
 
@@ -26,7 +26,7 @@ services:
       context: ./Client-Front-Zero3D
       dockerfile: Dockerfile
     image: zero3d-frontend:prod
-    container_name: zero3d_preact_front 
+    container_name: zero3d_prod_front 
     environment:
       - NODE_ENV=production
     networks:
@@ -37,7 +37,7 @@ services:
     build:
       context: ./Client-Back-Zero3D
       dockerfile: Dockerfile.prod
-    container_name: zero3d_django_back
+    container_name: zero3d_prod_back
     image: zero3d-backend:prod
     env_file:
       - ./.env.production 
@@ -56,7 +56,7 @@ services:
     build:
       context: ./Nginx
       dockerfile: Dockerfile
-    container_name: zero3d_nginx_rp
+    container_name: zero3d_prod_nginx
     image: zero3d-nginx:prod
     ports:
       - "80:80"
@@ -71,7 +71,7 @@ services:
       
   pgadmin:
     image: dpage/pgadmin4:7.0
-    container_name: zero3d_pgAdmin
+    container_name: zero3d_prod_pgAdmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
