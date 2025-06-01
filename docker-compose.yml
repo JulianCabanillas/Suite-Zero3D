@@ -5,7 +5,7 @@ services:
     image: postgres:15
     container_name: zero3d_dev_db
     env_file:
-      - ./Client-Back-Zero3D/.env.development 
+      - ./Client-Back-Zero3D/.env.example 
     environment:
       POSTGRES_DB: zero3d_dev_db
       POSTGRES_USER: admin
@@ -30,7 +30,7 @@ services:
     container_name: zero3d_dev_back
     command: /entrypoint.sh
     env_file:
-      - ./Client-Back-Zero3D/.env.development
+      - ./Client-Back-Zero3D/.env.example
     environment:
       DJANGO_SETTINGS_MODULE: appBackClient.settings.development
       DB_NAME: zero3d_dev_db
