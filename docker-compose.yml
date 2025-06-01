@@ -4,45 +4,60 @@ services:
   db:
     image: postgres:15-alpine
     container_name: zero3d_db
-    restart: unless-stopped
+    env_file:
+      - ./Client-Back-Zero3D/.env.development 
     environment:
-      POSTGRES_DB: db_zero3d
+      POSTGRES_DB: db_zero3d_dev
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./Client-Back-Zero3D/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - zero3d_dev_network
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./Client-Back-Zero3D/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - zero_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d db_zero3d"]
       interval: 10s
       retries: 5
 
   frontend:
-    build: ./Client-Front-Zero3D
+    build:
+      context: ./Client-Front-Zero3D
+      dockerfile: Dockerfile
     container_name: zero3d_preact_front 
+    command: npm run dev
+    volumes:
+      - ./Client-Front-Zero3D:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     depends_on:
-      - web
+      - backend
     networks:
-      - zero_network
+      - zero3d_dev_network
+    environment:
+      - NODE_ENV=development
 
 
-  web:
-    build: ./Client-Back-Zero3D
+  backend:
+    build:
+      context: ./Client-Back-Zero3D
+      dockerfile: Dockerfile.dev
     container_name: zero3d_django_back
     command: /entrypoint.sh
+    env_file:
+      - ./Client-Back-Zero3D/.env.development
     environment:
-      DB_NAME: db_zero3d
+      DJANGO_SETTINGS_MODULE: appBackClient.settings.development
+      DB_NAME: db_zero3d_dev
       DB_USER: admin
       DB_PASSWORD: admin
       DB_HOST: db
       DB_PORT: 5432
       SLIC3R_PATH: /usr/bin/slic3r
+      ALLOWED_HOSTS: localhost,127.0.0.1
     depends_on:
         db:
           condition: service_healthy
@@ -51,19 +66,8 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - zero_network
+      - zero3d_dev_network
     
-
-  nginx:
-    build: ./Nginx
-    container_name: zero3d_nginx_rp
-    ports:
-      - "80:80"
-    depends_on:
-      - web
-      - frontend
-    networks:
-      - zero_network
       
   pgadmin:
     image: dpage/pgadmin4
@@ -73,14 +77,17 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin  
     depends_on:
       - db
     networks:
-      - zero_network
+      - zero3d_dev_network
 
 volumes:
-  postgres_data:
+  postgres_data_dev:
+  pgadmin_data:
 
 networks:
-  zero_network:
+  zero3d_dev_network:
     driver: bridge
