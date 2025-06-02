@@ -30,8 +30,6 @@ services:
     image: zero3d-backend:prod
     env_file:
       - ./Client-Back-Zero3D/.env.staging 
-    environment:
-      - DJANGO_SETTINGS_MODULE=appBackClient.settings.staging
     depends_on:
         db:
           condition: service_healthy
@@ -49,7 +47,7 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-    - frontend_dist:/app/dist
+    - frontend_dist:/dist
     networks:
       - zero3d_stage_network
 
@@ -71,8 +69,10 @@ services:
       - zero3d_stage_network
       
   pgadmin:
-    image: dpage/pgadmin4:7.0
+    image: dpage/pgadmin4
     container_name: zero3d_pgAdmin
+    env_file:
+      - ./Client-Back-Zero3D/.env.staging
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
