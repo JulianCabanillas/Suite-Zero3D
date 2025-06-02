@@ -25,7 +25,7 @@ services:
   backend:
     build:
       context: ./Client-Back-Zero3D
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: zero3d_dev_back
     command: /app/entrypoint.sh
     environment:
