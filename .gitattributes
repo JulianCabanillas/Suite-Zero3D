@@ -1,9 +1,1 @@
-Client-Back-Zero3D/appBackClient/settings/base.py   merge=theirs
-Client-Back-Zero3D/appBackClient/settings/*         merge=ours
-Client-Back-Zero3D/appBackClient/asgi.py         merge=ours
-Client-Back-Zero3D/appBackClient/wsgi.py         merge=ours
-Client-Back-Zero3D/Dockerfile         merge=ours
-Client-Back-Zero3D/entrypoint.sh         merge=ours
-Client-Back-Zero3D/manage.py         merge=ours
-Client-Front-Zero3D/manage.py         merge=ours
 docker-compose.yml      merge=ours
