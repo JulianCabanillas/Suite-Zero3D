@@ -1,1 +1,2 @@
-docker-compose.yml      merge=ours
+docker-compose.yml merge=ours
+.gitmodule merge=ours
