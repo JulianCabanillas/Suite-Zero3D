@@ -25,7 +25,7 @@ services:
   backend:
     build:
       context: ./Client-Back-Zero3D
-      dockerfile: Dockerfile.stage
+      dockerfile: Dockerfile
     container_name: zero3d_django_back
     image: zero3d-backend:prod
     env_file:
