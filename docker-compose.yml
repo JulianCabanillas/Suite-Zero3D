@@ -57,6 +57,8 @@ services:
       dockerfile: Dockerfile
     container_name: zero3d_prod_nginx
     image: zero3d-nginx:prod
+    cpuset: "1"
+    cpus: "1.0"
     ports:
       - "80:80"
       - "443:443"
