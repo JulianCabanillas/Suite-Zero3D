@@ -6,7 +6,7 @@ services:
     container_name: zero3d_prod_db
     restart: unless-stopped
     env_file:
-      - ./Client-Back-Zero3D/.env.staging
+      - ./Client-Back-Zero3D/.env.production
     environment:
       POSTGRES_DB: zero3d_prod_db
       POSTGRES_USER: admin
@@ -29,7 +29,7 @@ services:
     container_name: zero3d_django_back
     image: zero3d-backend:prod
     env_file:
-      - ./Client-Back-Zero3D/.env.staging 
+      - ./Client-Back-Zero3D/.env.production 
     depends_on:
         db:
           condition: service_healthy
@@ -74,7 +74,7 @@ services:
     image: dpage/pgadmin4
     container_name: zero3d_pgAdmin
     env_file:
-      - ./Client-Back-Zero3D/.env.staging
+      - ./Client-Back-Zero3D/.env.production
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
