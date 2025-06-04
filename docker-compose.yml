@@ -26,7 +26,7 @@ services:
     build:
       context: ./Client-Back-Zero3D
       dockerfile: Dockerfile
-    container_name: zero3d_django_back
+    container_name: zero3d_prod_back
     image: zero3d-backend:prod
     env_file:
       - ./Client-Back-Zero3D/.env.production 
@@ -43,7 +43,7 @@ services:
       context: ./Client-Front-Zero3D
       dockerfile: Dockerfile
     image: zero3d-frontend:prod
-    container_name: zero3d_preact_front 
+    container_name: zero3d_prod_front 
     environment:
       - NODE_ENV=production
     volumes:
@@ -55,7 +55,7 @@ services:
     build:
       context: ./Nginx
       dockerfile: Dockerfile
-    container_name: zero3d_nginx_rp
+    container_name: zero3d_prod_nginx
     image: zero3d-nginx:prod
     ports:
       - "80:80"
@@ -72,7 +72,7 @@ services:
       
   pgadmin:
     image: dpage/pgadmin4
-    container_name: zero3d_pgAdmin
+    container_name: zero3d_prod_pgAdmin
     env_file:
       - ./Client-Back-Zero3D/.env.production
     environment:
