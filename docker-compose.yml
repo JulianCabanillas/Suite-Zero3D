@@ -80,9 +80,22 @@ services:
     networks:
       - zero3d_dev_network
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: zero3d_dev_portainer
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "9000:9000"
+    networks:
+      - zero3d_dev_network
+
 volumes:
   postgres_data_dev:
   pgadmin_data:
+  portainer_data:  ##
 
 networks:
   zero3d_dev_network:
