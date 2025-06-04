@@ -27,7 +27,7 @@ services:
       context: ./Client-Back-Zero3D
       dockerfile: Dockerfile
     container_name: zero3d_django_back
-    image: zero3d-backend:prod
+    image: zero3d-backend:stage
     env_file:
       - ./Client-Back-Zero3D/.env.staging 
     depends_on:
@@ -42,7 +42,7 @@ services:
     build: 
       context: ./Client-Front-Zero3D
       dockerfile: Dockerfile
-    image: zero3d-frontend:prod
+    image: zero3d-frontend:stage
     container_name: zero3d_preact_front 
     environment:
       - NODE_ENV=production
@@ -55,11 +55,10 @@ services:
     build:
       context: ./Nginx
       dockerfile: Dockerfile
-    container_name: zero3d_nginx_rp
-    image: zero3d-nginx:prod
+    container_name: zero3d_stage_nginx
+    image: zero3d-nginx:stage
     ports:
       - "8080:80"
-      - "443:443"
     volumes:
       - static_volume_stage:/app/staticfiles
       - frontend_dist_stage:/usr/share/nginx/html:ro
@@ -72,7 +71,7 @@ services:
       
   pgadmin:
     image: dpage/pgadmin4
-    container_name: zero3d_pgAdmin
+    container_name: zero3d_stage_pgAdmin
     env_file:
       - ./Client-Back-Zero3D/.env.staging
     environment:
