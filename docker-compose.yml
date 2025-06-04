@@ -95,7 +95,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data_stage:/data
     ports:
-      - "9000:9000"
+      - "9001:9000"
     networks:
       - zero3d_stage_network
 
