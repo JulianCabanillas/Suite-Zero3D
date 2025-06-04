@@ -57,6 +57,8 @@ services:
       dockerfile: Dockerfile
     container_name: zero3d_stage_nginx
     image: zero3d-nginx:stage
+    cpuset: "0"
+    cpus: "1.0"
     ports:
       - "8080:80"
     volumes:
@@ -85,6 +87,7 @@ services:
       - db
     networks:
       - zero3d_stage_network
+
 
   portainer:
     image: portainer/portainer-ce:latest
