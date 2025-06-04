@@ -3,21 +3,21 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: zero3d_stage_db
+    container_name: zero3d_prod_db
     restart: unless-stopped
     env_file:
       - ./Client-Back-Zero3D/.env.staging
     environment:
-      POSTGRES_DB: zero3d_stage_db
+      POSTGRES_DB: zero3d_prod_db
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     volumes:
-      - postgres_data_stage:/var/lib/postgresql/data
+      - postgres_data_prod:/var/lib/postgresql/data
       - ./Client-Back-Zero3D/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - zero3d_stage_network
+      - zero3d_prod_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d zero3d_stage_db"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d zero3d_prod_db"]
       interval: 10s
       retries: 5
 
@@ -34,9 +34,9 @@ services:
         db:
           condition: service_healthy
     volumes:
-      - static_volume_stage:/app/staticfiles
+      - static_volume_prod:/app/staticfiles
     networks:
-      - zero3d_stage_network
+      - zero3d_prod_network
 
   frontend:
     build: 
@@ -49,7 +49,7 @@ services:
     volumes:
     - frontend_dist:/dist
     networks:
-      - zero3d_stage_network
+      - zero3d_prod_network
 
   nginx:
     build:
@@ -58,17 +58,17 @@ services:
     container_name: zero3d_nginx_rp
     image: zero3d-nginx:prod
     ports:
-      - "8080:80"
+      - "8000:80"
       - "443:443"
     volumes:
-      - static_volume_stage:/app/staticfiles
+      - static_volume_prod:/app/staticfiles
       - frontend_dist:/usr/share/nginx/html:ro
       - ./Nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - backend
       - frontend
     networks:
-      - zero3d_stage_network
+      - zero3d_prod_network
       
   pgadmin:
     image: dpage/pgadmin4
@@ -85,11 +85,11 @@ services:
     depends_on:
       - db
     networks:
-      - zero3d_stage_network
+      - zero3d_prod_network
 
   portainer:
     image: portainer/portainer-ce:latest
-    container_name: zero3d_stage_portainer
+    container_name: zero3d_prod_portainer
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -97,15 +97,15 @@ services:
     ports:
       - "9000:9000"
     networks:
-      - zero3d_stage_network
+      - zero3d_prod_network
 
 volumes:
-  postgres_data_stage:
+  postgres_data_prod:
   pgadmin_data:
-  static_volume_stage:
+  static_volume_prod:
   frontend_dist:
   portainer_data:
 
 networks:
-  zero3d_stage_network:
+  zero3d_prod_network:
     driver: bridge
