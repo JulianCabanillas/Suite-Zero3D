@@ -1,3 +1,4 @@
+# .gitmodules stage:
 [submodule "Client-Front-Zero3D"]
 	path = Client-Front-Zero3D
 	url = https://github.com/JulianCabanillas/Client-Front-Zero3D.git
