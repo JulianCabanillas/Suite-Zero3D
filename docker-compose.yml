@@ -58,7 +58,7 @@ services:
     container_name: zero3d_nginx_rp
     image: zero3d-nginx:prod
     ports:
-      - "80:80"
+      - "8080:80"
       - "443:443"
     volumes:
       - static_volume_stage:/app/staticfiles
