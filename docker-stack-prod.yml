@@ -3,8 +3,6 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    #container_name: zero3d_prod_db
-    restart: unless-stopped
     env_file:
       - ./Client-Back-Zero3D/.env.production
     environment:
@@ -26,13 +24,9 @@ services:
         condition: any
 
   backend:
-    build:
-      context: ./Client-Back-Zero3D
-      dockerfile: Dockerfile
-    #container_name: zero3d_prod_back
-    image: zero3d-backend:prod
+    image: juliancabanillas/zero3d-backend:prod
     env_file:
-      - ./Client-Back-Zero3D/.env.production 
+      - ./Client-Back-Zero3D/.env.production
     depends_on:
       - db
     volumes:
@@ -46,32 +40,25 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
-  
+
   frontend:
-    build: 
-      context: ./Client-Front-Zero3D
-      dockerfile: Dockerfile
-    image: zero3d-frontend:prod
-    #container_name: zero3d_prod_front 
+    image: juliancabanillas/zero3d-frontend:prod
     environment:
       - NODE_ENV=production
     volumes:
-    - zero3d_prod_frontend_dist:/dist
+      - zero3d_prod_frontend_dist:/dist
     networks:
       - zero3d_prod_network
     deploy:
-      replicas: 2             
+      replicas: 2
       update_config:
         parallelism: 1
         delay: 10s
       restart_policy:
         condition: on-failure
+
   nginx:
-    build:
-      context: ./Nginx
-      dockerfile: Dockerfile
-    #container_name: zero3d_prod_nginx
-    image: zero3d-nginx:prod
+    image: juliancabanillas/zero3d-nginx:prod
     ports:
       - "80:80"
       - "443:443"
@@ -94,7 +81,6 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    #container_name: zero3d_prod_pgAdmin
     env_file:
       - ./Client-Back-Zero3D/.env.production
     environment:
@@ -115,7 +101,6 @@ services:
 
   portainer:
     image: portainer/portainer-ce:latest
-    container_name: zero3d_prod_portainer
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
