@@ -60,7 +60,7 @@ services:
     networks:
       - zero3d_prod_network
     deploy:
-      replicas: 2              # 2 réplicas de frontend en prod
+      replicas: 2             
       update_config:
         parallelism: 1
         delay: 10s
@@ -72,8 +72,6 @@ services:
       dockerfile: Dockerfile
     #container_name: zero3d_prod_nginx
     image: zero3d-nginx:prod
-    cpuset: "1"
-    cpus: "1.0"
     ports:
       - "80:80"
       - "443:443"
