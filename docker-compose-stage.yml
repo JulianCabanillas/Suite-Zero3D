@@ -67,8 +67,6 @@ services:
       dockerfile: Dockerfile
     #container_name: zero3d_stage_nginx
     image: zero3d-nginx:stage
-    cpuset: "0"
-    cpus: "1.0"
     ports:
       - "8080:80"
     volumes:
@@ -84,6 +82,8 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      
+      
       
   pgadmin:
     image: dpage/pgadmin4
