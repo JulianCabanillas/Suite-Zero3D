@@ -45,8 +45,6 @@ services:
     image: juliancabanillas/zero3d-frontend:prod
     environment:
       - NODE_ENV=production
-    volumes:
-      - zero3d_prod_frontend_dist:/dist
     networks:
       - zero3d_prod_network
     deploy:
