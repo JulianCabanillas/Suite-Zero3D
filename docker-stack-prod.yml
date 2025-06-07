@@ -41,25 +41,10 @@ services:
       restart_policy:
         condition: on-failure
 
-  frontend:
-    image: juliancabanillas/zero3d-frontend:prod-v0.02
-    command: ["sh","-c","cp -r /dist/* /dist && sleep infinity"]
-    environment:
-      - NODE_ENV=production
-    networks:
-      - zero3d_prod_network
-    volumes:
-    - zero3d_prod_frontend_dist:/dist
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure
+
 
   nginx:
-    image: juliancabanillas/zero3d-nginx:prod-v0.02
+    image: juliancabanillas/zero3d-frontend:prod-v0.03
     ports:
       - "80:80"
       - "443:443"
