@@ -24,7 +24,7 @@ services:
         condition: any
 
   backend:
-    image: juliancabanillas/zero3d-backend:prod
+    image: juliancabanillas/zero3d-backend:prod-v0.01
     env_file:
       - ./Client-Back-Zero3D/.env.production
     depends_on:
@@ -42,7 +42,7 @@ services:
         condition: on-failure
 
   frontend:
-    image: juliancabanillas/zero3d-frontend:prod
+    image: juliancabanillas/zero3d-frontend:prod-v0.01
     environment:
       - NODE_ENV=production
     networks:
@@ -63,7 +63,7 @@ services:
     volumes:
       - zero3d_prod_static_volume:/app/staticfiles
       - zero3d_prod_frontend_dist:/usr/share/nginx/html:ro
-      - ./Nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./Nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - backend
       - frontend
