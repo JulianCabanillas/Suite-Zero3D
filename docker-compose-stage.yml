@@ -3,8 +3,6 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    #container_name: zero3d_stage_db
-    restart: unless-stopped
     env_file:
       - ./Client-Back-Zero3D/.env.staging
     environment:
@@ -26,11 +24,8 @@ services:
         condition: any
 
   backend:
-    build:
-      context: ./Client-Back-Zero3D
-      dockerfile: Dockerfile
-    #container_name: zero3d_django_back
-    image: zero3d-backend:stage
+    
+    image: juliancabanillas/zero3d-backend:stage
     env_file:
       - ./Client-Back-Zero3D/.env.staging 
     depends_on:
@@ -45,11 +40,7 @@ services:
         condition: on-failure
 
   frontend:
-    build: 
-      context: ./Client-Front-Zero3D
-      dockerfile: Dockerfile
-    image: zero3d-frontend:stage
-    #container_name: zero3d_preact_front 
+    image: juliancabanillas/zero3d-frontend:stage
     environment:
       - NODE_ENV=production
     volumes:
@@ -62,11 +53,7 @@ services:
         condition: on-failure
 
   nginx:
-    build:
-      context: ./Nginx
-      dockerfile: Dockerfile
-    #container_name: zero3d_stage_nginx
-    image: zero3d-nginx:stage
+    image: juliancabanillas/zero3d-nginx:stage
     ports:
       - "8080:80"
     volumes:
@@ -127,7 +114,10 @@ volumes:
   zero3d_stage_pgadmin_data:
   zero3d_stage_static_volume:
   zero3d_stage_frontend_dist:
-  zero3d_stage_portainer_data:
+  zero3d_stage_portainer_data:build:
+      context: ./Nginx
+      dockerfile: Dockerfile
+    #container_name: zero3d_stage_nginx
 
 networks:
   zero3d_stage_network:
