@@ -56,7 +56,7 @@ services:
         condition: on-failure
 
   nginx:
-    image: juliancabanillas/zero3d-nginx:prod
+    image: juliancabanillas/zero3d-nginx:prod-v0.01
     ports:
       - "80:80"
       - "443:443"
