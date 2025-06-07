@@ -114,7 +114,7 @@ volumes:
   zero3d_stage_pgadmin_data:
   zero3d_stage_static_volume:
   zero3d_stage_frontend_dist:
-  zero3d_stage_portainer_data:build:
+  zero3d_stage_portainer_data:
 
 
 networks:
