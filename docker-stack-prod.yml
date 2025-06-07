@@ -47,6 +47,8 @@ services:
       - NODE_ENV=production
     networks:
       - zero3d_prod_network
+    volumes:
+    - zero3d_prod_frontend_dist:/dist
     deploy:
       replicas: 2
       update_config:
