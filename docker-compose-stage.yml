@@ -115,9 +115,7 @@ volumes:
   zero3d_stage_static_volume:
   zero3d_stage_frontend_dist:
   zero3d_stage_portainer_data:build:
-      context: ./Nginx
-      dockerfile: Dockerfile
-    #container_name: zero3d_stage_nginx
+
 
 networks:
   zero3d_stage_network:
