@@ -43,7 +43,7 @@ services:
 
   frontend:
     image: juliancabanillas/zero3d-frontend:prod-v0.02
-    command: ["sh","-c","cp -r /app/dist/* /dist && sleep infinity"]
+    command: ["sh","-c","cp -r /dist/* /dist && sleep infinity"]
     environment:
       - NODE_ENV=production
     networks:
