@@ -1,8 +1,13 @@
-# Suite‑Zero3D Prod
+# Suite‑Zero3D Prod
 
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge\&logo=postgresql\&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-%23009639.svg?style=for-the-badge\&logo=nginx\&logoColor=white)
 ![build](https://img.shields.io/badge/build-passing-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-blue)
+
+> **Este README está realizado para el entorno *producción*.**
+> A diferencia de la verisión para *Stage*, aquí el **frontend está servido por Nginx** dentro del mismo contenedor por lo que el docker stack no levanta ningun servicio de frontend.
+> Las imágenes del frontend ya vienen pre‑compiladas en la propia imagen Docker servido por Nginx.
 
 ---
 
@@ -10,30 +15,31 @@
 
 * [✨ Descripción breve](#-descripción-breve)
 * [🖼️ Capturas](#️-capturas)
-* [🚀 Comenzar](#-comenzar)
+* [🚀 Despliegue rápido](#-comenzar)
 * [🐳 Ejecutar con Docker Compose](#-ejecutar-con-docker-compose)
-* [📂 Estructura del proyecto](#estructura-del-proyecto)
-* [⚙️ Variables de entorno](#️-variables-del-entorno)
+* [📂 Estructura de contenedores](#estructura-de-contenedores)
+* [⚙️ Variables de entorno](#️-variables-de-entorno)
 * [🔌 API Reference](#-api-reference)
-* [🧪 Tests](#-tests)
+* [🧪 Smoke Tests](#-smoke-tests)
+* [🤝 Contribuir](#-contribuir-al-proyecto)
 * [📄 Licencia](#-licencia)
 
 ---
 
 ## ✨ Descripción breve
 
-**Stage** es el entorno de pruebas de *Suite‑Zero3D*. Utilizamos las imágenes ya publicadas en **Docker Hub** para que el despliegue sea rapido e inmediato y lo más parecido al servidor de producción, pero sin los riesgos que convella.
+Entorno **Productivo** de Suite‑Zero3D.
+
+* **Nginx** sirve el bundle estático de Preact (`/`, `/assets/...`) y reenvía `/api/` a **Gunicorn** (backend Django) a través de la red interna Docker.
+* **Postgres** corre como servicio aparte **no expuesto** al host: todo el tráfico pasa por la red `zero3d_prod_net`.
+* **Imágenes pre‑compiladas** publicadas en Docker Hub (`juliancabanillas/zero3d-*:<versión>`).
 
 ---
 
 ## 🖼️ Capturas
 
-Coloca aquí algunas capturas de tu despliegue staged:
-
-```markdown
-![Home](docs/img/Ejemplo1.png)
-![Dashboard](docs/img/Ejemplo2.png)
-```
+(docs/img/Ejemplo1.png)
+(docs/img/Ejemplo2.gif)
 
 ---
 
@@ -56,69 +62,57 @@ $ sudo apt upgrade -y
 $ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-### 1. Clonar el repositorio (rama `stage`)
-
+### 1. Clonar el repositorio (rama `main`)
 ```bash
-$ git clone --branch develop --recurse-submodules https://github.com/JulianCabanillas/Suite-Zero3D.git
+# 1. Clonar sólo la rama prod, usara imagenes de DockerHub, descargamos submodulos por archivos de con.
+$ git clone --branch main --recurse-submodules https://github.com/JulianCabanillas/Suite-Zero3D.git
 $ cd Suite-Zero3D
+
+# 2. (Opc.) Actualizar a la última versión de las imágenes o actualizar repositorios desde remoto:
+$ docker compose -f docker-compose-prod.yml pull
+# ó
+$ git pull origin main
 ```
 
-### 2. Crear archivo `.env.staging`
+### 2. Crear archivo `.env.production`
 
 ```bash
-$ cp Client-Back-Zero3D/.env.example Client-Back-Zero3D/.env.staging
+$ cp Client-Back-Zero3D/.env.example Client-Back-Zero3D/.env.production
+$ nano .env.production
+# Descomenta la parte de production!!
 ```
 
-### 3. Descargar las imágenes
+### 3. Descargar las imágenes y levanta los servicions
 
 ```bash
-$ docker compose -f docker-compose-stage.yml pull   # opcional, ‘up’
-```
-
-### 4. Levantar el stack
-
-```bash
-$ docker compose -f docker-compose-stage.yml up -d   # sin --build ✔
+$ docker stack deploy -c docker-stack-prod.yml zero3d_prod
 ```
 
 ### 5. Entrar
 
 | Servicio    | URL                                            |
 | ----------- | ---------------------------------------------- |
-| Front + API | [http://localhost:8080](http://localhost:8080) |
-| PGAdmin     | [http://localhost:5051](http://localhost:5051) |
-| Portainer   | [http://localhost:9001](http://localhost:9001) |
+| Front + API | [http://localhost:80](http://localhost:80)     |
+| PGAdmin     | [http://localhost:5050](http://localhost:5050) |
+| Portainer   | [http://localhost:9000](http://localhost:9000) |
 
-> En stage no hay **hot‑reload** ni puerto 3000; todo pasa por Nginx para simular el estado de producción.
+
+> **Nota** : Los únicos puertos expuestos al host son `443` (TLS) y opcionalmente `80` para redirección a HTTPS,las demás conexiones son privadas internamente.
+> En prod no hay **hot‑reload** ni puerto 3000; todo pasa por Nginx.
 Cuando se levanta por primera vez Portainer hay que crear rapidamente usuario, tiene tiempo determinado.
-
 ---
 
 ## 🐳 Ejecutar con Docker Compose
 
-Comandos típicos:
+| Acción              | Comando                                                                                             | Qué hace                                                                         |
+| ------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Arrancar todo       | `docker stack deploy -c docker-stack-prod.yml zero3d_prod`                                                   | Inicia Nginx, backend, postgres, portainer, también actualiza y reinicia contenedores con cero downtime.                                      |
+| Parar               | `docker stack rm zero3d` | Despliega drain y elimina todos los servicios, redes y secretos. |
+| Limpiar imagenes    | `docker system prune -af --volumes`                                                    | Borra capas e imágenes no utilizadas, incl. volúmenes anónimos.                                            |
 
-```bash
-# Ver estado
-$ docker compose -f docker-compose-stage.yml ps
-
-# Logs (seguimiento de Nginx, por ejemplo)
-$ docker compose -f docker-compose-stage.yml logs -f nginx
-
-# Actualizar a las últimas imágenes publicadas
-$ docker compose -f docker-compose-stage.yml pull
-$ docker compose -f docker-compose-stage.yml up -d  # recrea los servicios si hay cambios
-
-# Parar y limpiar contenedores sin borrar la BD
-$ docker compose -f docker-compose-stage.yml down
-
-# Parar y BORRAR BD, volumenes e imagenes
-$ docker compose -f docker-compose-stage.yml down --volumes --rmi all --remove-orphans
-```
-La orden --volumes elimina los volumenes generados, la orden --remove-orphans para los huerfanos y --rmi all para las imagenes.
 ---
 
-## 📂 Estructura del proyecto
+## 📂 Estructura de contenedores
 
 ```
 Suite‑Zero3D/
@@ -130,51 +124,66 @@ Suite‑Zero3D/
 
 ---
 
-## ⚙️ Variables del entorno
+| Servicio      | Imagen                                 | Puertos host       | Notas                                    |
+| ------------- | -------------------------------------- | ------------------ | ---------------------------------------- |
+| **nginx**     | `juliancabanillas/zero3d-nginx:prod-v000`   | 80 ↦ 80, 443 ↦ 443 | Sirve frontend y actúa de proxy inverso. |
+| **backend**   | `juliancabanillas/zero3d-backend:prod-v000` | *interno*          | Ejecuta Gunicorn + Django.               |
+| **db**        | `postgres:15-alpine`                   | *interno*          | Volumen `postgres_data_prod`.            |
+| **portainer** | `portainer/portainer-ce:2.20`          | 9443 ↦ 9443        | (Opc.) panel de administración.          |
 
-El contenedor **backend** consume las variables definidas en
-`Client-Back-Zero3D/.env.staging` (referido por `env_file:` en Compose):
+---
+
+## ⚙️ Variables de entorno
+
+Las imágenes esperan un archivo `.env.production` en la raíz que podemos copiar y renombrar desde `.env-example` descomentando a postarior las partes de production:
 
 ```dotenv
-SECRET_KEY='django-insecure-gc9w9#$!#3p$46*#0kfghec86c0w-08l8ez1$cw-sjp81=br#'
-DATABASE_NAME=zero3d_stage_db
-DATABASE_USER=admin
-DATABASE_PASSWORD=admin
-DATABASE_HOST=db
-DATABASE_PORT=5432
-ALLOWED_HOSTS=stage.zero3d.shop,www.stage.zero3d.shop,localhost
-SLIC3R_PATH=/usr/bin/slic3r
-MAILTRAP_USER=xxxxx
-MAILTRAP_PASS=yyyyy
-DJANGO_SETTINGS_MODULE=appBackClient.settings.staging
-```
+# Core Django
+SECRET_KEY="<cadena‑32‑chars>"
+DJANGO_DEBUG=False
+ALLOWED_HOSTS=app.zero3d.com,.zero3d.com
 
+# Base de datos
+POSTGRES_DB=zero3d_prod_db
+POSTGRES_USER=zero3d_admin
+POSTGRES_PASSWORD=<strong-pass>
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+
+# Seguridad
+CORS_ALLOWED_ORIGINS=https://app.zero3d.com,https://zero3d.com
+CSRF_TRUSTED_ORIGINS=https://app.zero3d.com
+```
 ---
 
 ## 🔌 API Reference
 
-**Base URL**: `http://localhost:8080/api/`
-
-| Método | Endpoint            | Descripción                      |
-| ------ | ------------------- | -------------------------------- |
-| POST   | `/login_client/`    | Autenticación y obtención de JWT |
-| POST   | `/register_client/` | Alta de cliente + login          |
-| POST   | `/register_order/`  | Crea pedido vinculado al usuario |
-| POST   | `/calculator/`      | Calcula precio de impresión 3D   |
+| Método | Endpoint                | Descripción               |
+| ------ | ----------------------- | ------------------------- |
+| `POST` | `/api/login_client/`    | Autenticación JWT         |
+| `POST` | `/api/register_client/` | Registro y login          |
+| `POST` | `/api/register_order/`  | Crear pedido              |
+| `POST` | `/api/calculator/`      | Calcular precio impresión |
 
 ---
 
-## 🧪 Tests
+## 🧪 Smoke Tests
 
-Los tests se ejecutan **dentro** del contenedor backend:
+Si es necesario se puede ejecutar un test rápido para comprobar que todo responde correctamente:
 
 ```bash
-$ docker compose -f docker-compose-stage.yml exec backend pytest -q
+curl -fsSL https://app.zero3d.com/api/health/ || echo "Backend no responde"
+curl -fsSL https://app.zero3d.com | grep -q "<title>Zero3D" && echo "Front OK"
 ```
+
+---
+
+## 🤝 Contribuir al proyecto
+
+Las contribuciones se realizaran en la rama develop, consulta dicha rama para mas información.
 
 ---
 
 ## 📄 Licencia
 
 Distribuido bajo **GNU GPL v3** — consulta `LICENSE` para los detalles.
-
