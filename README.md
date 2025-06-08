@@ -1,10 +1,8 @@
-# Suite‑Zero3D
+# Suite‑Zero3D Develop
 
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![build](https://img.shields.io/badge/build-passing-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-blue)
-
-> **Readme Develop** 
 
 ---
 
@@ -13,14 +11,14 @@
 * [✨ Descripción breve](#-descripción-breve)
 * [🖼️ Capturas](#️-capturas)
 * [🚀 Inicio rápido!](#-comenzar)
-* [🐳 Ejecutando con Docker Compose](#-ejecutar-con-docker-compose)
+* [🐳 Ejecutando con Docker Compose](#-ejecutar-con-docker)
 * [🛠️ Entorno de desarrollo](#️-entorno-de-desarrollo)
 * [📂 Estructura del proyecto](#estructura-del-proyecto)
-* [⚙️ Variables de entorno](#️-variables-de-entorno)
-* [🔌 API Reference](#api-reference)
-* [🧪 Tests](#tests)
-* [🤝 Contribuir](#contribuir)
-* [📄 Licencia](#licencia)
+* [⚙️ Variables de entorno](#️-variables-del-entorno)
+* [🔌 API Reference](#-api-reference)
+* [🧪 Tests](#-tests)
+* [🤝 Contribuir](#-contribuir-al-proyecto)
+* [📄 Licencia](#-licencia)
 
 ---
 
@@ -88,7 +86,7 @@ $ docker compose up --build
 
 ---
 
-## 🐳 Ejecutar con Docker Compose
+## 🐳 Ejecutar con Docker
 
 Podemos incluir un nombre especifico de archivo con -f 
 Si queremos ademas omitir el log de arranque usamos -d
@@ -163,7 +161,7 @@ Suite‑Zero3D/
 
 ---
 
-## ⚙️ Variables de entorno
+## ⚙️ Variables del entorno
 
 Desde la raiz del modulo Client-Back-Zero3D, podemos copiar `.env.example` en la raíz con el nombre de `.env.development`. Tendremos lo siguiente:
 
@@ -179,7 +177,7 @@ DB_PORT=5432
 
 ---
 
-## 🔌 API Reference
+## 🔌 Api Reference
 
 | Método | Endpoint                 | Descripción                      |
 | ------ | ------------------------ | -------------------------------- |
@@ -202,7 +200,7 @@ $ docker compose exec frontend npm test
 
 ---
 
-## 🤝 Contribuir
+## 🤝 Contribuir al proyecto
 
 1. Haz un fork del proyecto.
 2. Crea tu rama: `git checkout -b develop/mi-feature`.
