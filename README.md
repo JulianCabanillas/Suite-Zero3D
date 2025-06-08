@@ -27,11 +27,11 @@
 * [✨ Descripción breve](#-descripción-breve)
 * [🖼️ Capturas](#️-capturas)
 * [🚀 Despliegue rápido](#-comenzar)
-* [🐳 Ejecutar con Docker Compose](#-ejecutar-con-docker-compose)
+* [🐳 Ejecutar con Docker Compose](#-ejecutar-con-docker)
 * [📂 Estructura de contenedores](#estructura-de-contenedores)
 * [⚙️ Variables de entorno](#️-variables-de-entorno)
 * [🔌 API Reference](#-api-reference)
-* [🧪 Smoke Tests](#-smoke-tests)
+* [🧪 Smoke Tests](#-tests)
 * [🤝 Contribuir](#-contribuir-al-proyecto)
 * [📄 Licencia](#-licencia)
 
@@ -41,9 +41,9 @@
 
 Entorno **Productivo** de Suite‑Zero3D.
 
-* **Nginx** sirve el bundle estático de Preact (`/`, `/assets/...`) y reenvía `/api/` a **Gunicorn** (backend Django) a través de la red interna Docker.
-* **Postgres** corre como servicio aparte **no expuesto** al host: todo el tráfico pasa por la red `zero3d_prod_net`.
-* **Imágenes pre‑compiladas** publicadas en Docker Hub (`juliancabanillas/zero3d-*:<versión>`).
+* **Nginx** sirve la imagen estática de Preact y reenvía `/api/` a **Gunicorn**, el servicio de backend, a través de la propia red interna.
+* **Postgres** está siendo ejecutado en segundo plano, **no expuesto** al host: todo el tráfico está dirigido por la red `zero3d_prod_network`.
+* **Imágenes pre‑compiladas**  están publicadas en Docker Hub (`juliancabanillas/zero3d-[prod/stage]:<versión>`).
 
 ---
 
@@ -101,7 +101,7 @@ $ nano .env.production
 $ docker stack deploy -c docker-stack-prod.yml zero3d_prod
 ```
 
-### 5. Entrar
+### 4. Entrar
 
 | Servicio    | URL                                            |
 | ----------- | ---------------------------------------------- |
@@ -116,15 +116,15 @@ $ docker stack deploy -c docker-stack-prod.yml zero3d_prod
 Cuando se levanta por primera vez Portainer hay que crear rapidamente usuario, tiene tiempo determinado.
 
 > **Tip:** Servicios:
- - Puerto 8080 (Nginx) -> http://stage.zero3d.shop:8080
+ - Puerto 80   (Nginx) -> http://stage.zero3d.shop:8080
  - Puerto 3000 (frontend dev) 
  - Puerto 8000 (backend)
- - Puerto 5051 (PGAdmin) -> http://stage.zero3d.shop:5051
- - Puerto 9001 (Portainer). -> http://stage.zero3d.shop:9001
+ - Puerto 5050 (PGAdmin) -> http://stage.zero3d.shop:5051
+ - Puerto 9000 (Portainer). -> http://stage.zero3d.shop:9001
 
 ---
 
-## 🐳 Ejecutar con Docker Compose
+## 🐳 Ejecutar con Docker
 
 | Acción              | Comando                                                                                             | Qué hace                                                                         |
 | ------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -149,7 +149,7 @@ Suite‑Zero3D/
 | Servicio      | Imagen                                 | Puertos host       | Notas                                    |
 | ------------- | -------------------------------------- | ------------------ | ---------------------------------------- |
 | **nginx**     | `juliancabanillas/zero3d-nginx:prod-v000`   | 80 ↦ 80, 443 ↦ 443 | Sirve frontend y actúa de proxy inverso. |
-| **backend**   | `juliancabanillas/zero3d-backend:prod-v000` | *interno*          | Ejecuta Gunicorn + Django.               |
+| **backend**   | `juliancabanillas/zero3d-backend:prod-v000` | *interno*          | Ejecuta Gunicorn y Django.               |
 | **db**        | `postgres:15-alpine`                   | *interno*          | Volumen `postgres_data_prod`.            |
 | **portainer** | `portainer/portainer-ce:2.20`          | 9443 ↦ 9443        | (Opc.) panel de administración.          |
 
@@ -189,7 +189,7 @@ CSRF_TRUSTED_ORIGINS=https://app.zero3d.com
 
 ---
 
-## 🧪 Smoke Tests
+## 🧪 Tests
 
 Si es necesario se puede ejecutar un test rápido para comprobar que todo responde correctamente:
 
