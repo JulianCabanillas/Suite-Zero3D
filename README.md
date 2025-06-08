@@ -15,6 +15,9 @@
 ![build](https://img.shields.io/badge/build-passing-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-blue)
 
+> **Este README está realizado para el entorno *stage*.**
+> A diferencia de la verisión para *develop*, aquí **se empieza a usar NGINX** para levantar la red interna y el proxy inverse.
+> Las imágenes pre-compiladas sustituyen al levantamiento por código, utilizamos dichas imagenes como producto inal para levantar en el servidor, se utilizan los repositorio para hacer debug con los entornos.
 ---
 
 ## 📑 Índice
@@ -41,11 +44,10 @@
 
 Coloca aquí algunas capturas de tu despliegue staged:
 
-```markdown
 Ejemplos de la web:
 ![Ejemplo1](docs/img/Ejemplo1.png)
 ![Ejemplo2](docs/img/Ejemplo2.png)
-```
+
 
 ---
 
