@@ -42,7 +42,7 @@ services:
 
 
   nginx:
-    image: juliancabanillas/zero3d-frontend:prod-v0.05
+    image: juliancabanillas/zero3d-frontend:prod-v0.055
     ports:
       - "80:80"
       - "443:443"
