@@ -74,7 +74,7 @@ services:
     ports:
       - "5050:80"
     volumes:
-      - pgadmin_data:/var/lib/pgadmin  
+      - pgadmin_data_dev:/var/lib/pgadmin  
     depends_on:
       - db
     networks:
@@ -86,7 +86,7 @@ services:
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - portainer_data_dev:/data
     ports:
       - "9000:9000"
     networks:
@@ -94,8 +94,8 @@ services:
 
 volumes:
   postgres_data_dev:
-  pgadmin_data:
-  portainer_data:  ##
+  pgadmin_data_dev:
+  portainer_data_dev:  
 
 networks:
   zero3d_dev_network:
