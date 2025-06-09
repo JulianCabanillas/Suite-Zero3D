@@ -29,8 +29,6 @@ services:
       - ./Client-Back-Zero3D/.env.production
     depends_on:
       - db
-    volumes:
-      - zero3d_prod_static_volume:/app/staticfiles
     networks:
       - zero3d_prod_network
     deploy:
@@ -48,8 +46,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - zero3d_prod_static_volume:/app/staticfiles
     depends_on:
       - backend
       - frontend
