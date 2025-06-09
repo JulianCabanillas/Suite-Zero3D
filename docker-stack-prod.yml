@@ -24,7 +24,7 @@ services:
         condition: any
 
   backend:
-    image: juliancabanillas/zero3d-backend:prod-v0.04
+    image: juliancabanillas/zero3d-backend:prod-v0.05
     env_file:
       - ./Client-Back-Zero3D/.env.production
     depends_on:
@@ -42,7 +42,7 @@ services:
 
 
   nginx:
-    image: juliancabanillas/zero3d-frontend:prod-v0.04
+    image: juliancabanillas/zero3d-frontend:prod-v0.05
     ports:
       - "80:80"
       - "443:443"
