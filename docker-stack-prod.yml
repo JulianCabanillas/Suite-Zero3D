@@ -42,13 +42,16 @@ services:
 
 
   nginx:
-    image: juliancabanillas/zero3d-frontend:prod-v0.055
+    image: juliancabanillas/zero3d-frontend:prod-v0.056
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - backend
       - frontend
+    volumes:
+      - /srv/letsencrypt/etc:/etc/letsencrypt:ro
+      - /srv/letsencrypt/var:/var/lib/letsencrypt:ro
     networks:
       - zero3d_prod_network
     deploy:
