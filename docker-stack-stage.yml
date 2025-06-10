@@ -25,7 +25,7 @@ services:
 
   backend:
     
-    image: juliancabanillas/zero3d-backend:stage-v0.05
+    image: juliancabanillas/zero3d-backend:stage-v0.07
     env_file:
       - ./Client-Back-Zero3D/.env.staging 
     depends_on:
@@ -40,7 +40,7 @@ services:
         condition: on-failure
 
   frontend:
-    image: juliancabanillas/zero3d-frontend:stage-v0.05
+    image: juliancabanillas/zero3d-frontend:stage-v0.07
     environment:
       - NODE_ENV=production
     volumes:
