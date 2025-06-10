@@ -42,7 +42,7 @@ services:
 
 
   nginx:
-    image: juliancabanillas/zero3d-frontend:prod-v0.057
+    image: juliancabanillas/zero3d-frontend:prod-v0.058
     ports:
       - "80:80"
     depends_on:
