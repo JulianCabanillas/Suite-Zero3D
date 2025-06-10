@@ -45,7 +45,6 @@ services:
     image: juliancabanillas/zero3d-frontend:prod-v0.057
     ports:
       - "80:80"
-      - "443:443"
     depends_on:
       - backend
       - frontend
@@ -97,8 +96,7 @@ services:
 volumes:
   zero3d_prod_postgres_data:
   zero3d_prod_pgadmin_data:
-  zero3d_prod_static_volume:
-  zero3d_prod_frontend_dist:
+
   zero3d_prod_portainer_data:
 
 networks:
