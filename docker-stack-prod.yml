@@ -24,7 +24,7 @@ services:
         condition: any
 
   backend:
-    image: juliancabanillas/zero3d-backend:prod-v0.05
+    image: juliancabanillas/zero3d-backend:prod-v0.057
     env_file:
       - ./Client-Back-Zero3D/.env.production
     depends_on:
